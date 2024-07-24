@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "./button";
+import { Label } from "./label";
+import { Input } from "./input";
 
 type Topic = {
   id: number;
@@ -10,6 +12,7 @@ type Topic = {
 const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<number[]>([]);
+  const [textInput, setTextInput] = useState<string>("");
 
   useEffect(() => {
     if (fileUploaded) {
@@ -30,6 +33,42 @@ const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
         ? prevSelectedTopics.filter((topicId) => topicId !== id)
         : [...prevSelectedTopics, id]
     );
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextInput(event.target.value);
+  };
+
+  const postSelectedTopics = async () => {
+    const selectedTitles = selectedTopics
+      .map((id) => {
+        const topic = topics.find((t) => t.id === id);
+        return topic ? topic.title : "";
+      })
+      .filter((title) => title !== "");
+
+    const payload = {
+      titles: selectedTitles,
+      userInput: textInput,
+    };
+
+    try {
+      const response = await fetch("/api/submitTopics", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      console.log("Successfully posted data:", payload);
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
   };
 
   useEffect(() => {
@@ -55,6 +94,21 @@ const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
           </Button>
         ))}
       </div>
+      <section className="mb-8">
+        <Label htmlFor="prompt" className="block mb-2 text-sm font-medium">
+          Explain what you want to learn about in more detail
+        </Label>
+        <Input
+          id="prompt"
+          placeholder="Value"
+          value={textInput}
+          onChange={handleInputChange}
+          className="mb-4 p-2 border rounded"
+        />
+      </section>
+      <Button onClick={postSelectedTopics} className="mx-auto">
+        Submit Selected Topics
+      </Button>
     </section>
   );
 };

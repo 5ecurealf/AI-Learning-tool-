@@ -64,14 +64,7 @@ export function LearningDashboard() {
             <UploadForm setState={setFileUploaded}></UploadForm>
           </div>
         </section>
-        <Topics fileUploaded={fileUploaded} />
-        <section className="mb-8">
-          <Label htmlFor="prompt" className="block mb-2 text-sm font-medium">
-            Explain what you want to learn about in more detail
-          </Label>
-          <Input id="prompt" placeholder="Value" />
-        </section>
-        <Button className="mx-auto">Generate</Button>
+        {fileUploaded && <Topics fileUploaded={fileUploaded} />}
       </main>
     </div>
   );
