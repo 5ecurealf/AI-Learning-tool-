@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "./button";
 import { Label } from "./label";
 import { Input } from "./input";
+import { useRouter } from "next/navigation";
 
 type Topic = {
   id: number;
@@ -13,6 +14,7 @@ const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<number[]>([]);
   const [textInput, setTextInput] = useState<string>("");
+  const router = useRouter();
 
   useEffect(() => {
     if (fileUploaded) {
@@ -66,6 +68,7 @@ const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
       }
 
       console.log("Successfully posted data:", payload);
+      router.push("/revise");
     } catch (error) {
       console.error("Error posting data:", error);
     }

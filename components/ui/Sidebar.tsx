@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   BookIcon,
@@ -11,6 +13,36 @@ import {
 } from "@/components/ui/icons"; // Adjust the import paths as necessary
 
 export function Sidebar() {
+  const pathname = usePathname();
+
+  const navItems = [
+    {
+      href: "/",
+      icon: <ComponentIcon className="w-5 h-5 mr-2" />,
+      label: "Material",
+    },
+    {
+      href: "/revise",
+      icon: <RedoIcon className="w-5 h-5 mr-2" />,
+      label: "Revise",
+    },
+    {
+      href: "/test",
+      icon: <TestTubeIcon className="w-5 h-5 mr-2" />,
+      label: "Test",
+    },
+    {
+      href: "/test/results",
+      icon: <CheckIcon className="w-5 h-5 mr-2" />,
+      label: "Results",
+    },
+    {
+      href: "/chat",
+      icon: <WebcamIcon className="w-5 h-5 mr-2" />,
+      label: "Chat",
+    },
+  ];
+
   return (
     <aside className="w-64 p-4 bg-gray-100">
       <h2 className="mb-8 text-2xl font-bold flex items-center">
@@ -18,26 +50,20 @@ export function Sidebar() {
         Learn
       </h2>
       <nav className="space-y-4">
-        <Button variant="ghost" className="flex items-center w-full text-left">
-          <ComponentIcon className="w-5 h-5 mr-2" />
-          Material
-        </Button>
-        <Button variant="ghost" className="flex items-center w-full text-left">
-          <RedoIcon className="w-5 h-5 mr-2" />
-          Revise
-        </Button>
-        <Button variant="ghost" className="flex items-center w-full text-left">
-          <CheckIcon className="w-5 h-5 mr-2" />
-          Results
-        </Button>
-        <Button variant="ghost" className="flex items-center w-full text-left">
-          <TestTubeIcon className="w-5 h-5 mr-2" />
-          Test
-        </Button>
-        <Button variant="ghost" className="flex items-center w-full text-left">
-          <WebcamIcon className="w-5 h-5 mr-2" />
-          Chat
-        </Button>
+        {navItems.map((item) => (
+          <Link key={item.href} href={item.href} passHref>
+            <Button
+              as="a"
+              variant="ghost"
+              className={`flex items-center w-full text-left ${
+                pathname === item.href ? "bg-gray-200" : ""
+              }`}
+            >
+              {item.icon}
+              {item.label}
+            </Button>
+          </Link>
+        ))}
       </nav>
     </aside>
   );
