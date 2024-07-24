@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { UploadForm } from "./ui/uploadForm";
 
 export function LearningDashboard() {
+  const [fileUploaded, setFileUploaded] = useState(false);
   return (
     <div className="flex min-h-screen">
       {/* side navigation  */}
@@ -61,7 +62,7 @@ export function LearningDashboard() {
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold">Resources</h2>
           <div className="flex items-center justify-center p-8 border-2 border-dashed rounded-lg bg-blue-50">
-            <UploadForm></UploadForm>
+            <UploadForm setState={setFileUploaded}></UploadForm>
           </div>
         </section>
         <section className="mb-8">
