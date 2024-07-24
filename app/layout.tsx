@@ -3,6 +3,7 @@
 import { Manrope } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import { Sidebar } from "@/components/ui/Sidebar"; // Adjust the import path as needed
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -22,7 +23,10 @@ export default function Layout({ children }) {
       <body
         className={cn("antialiased", fontHeading.variable, fontBody.variable)}
       >
-        {children}
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <main className="flex-1 p-8">{children}</main>
+        </div>
       </body>
     </html>
   );
