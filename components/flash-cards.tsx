@@ -1,45 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+export interface Flashcard {
+  question: string;
+  answer: string;
+}
 
 export function FlashCards() {
-  const flashcards = [
-    {
-      question: "What is the capital of France?",
-      answer: "Paris",
-    },
-    {
-      question: "What is the largest ocean on Earth?",
-      answer: "Pacific Ocean",
-    },
-    {
-      question: 'Who wrote the novel "To Kill a Mockingbird"?',
-      answer: "Harper Lee",
-    },
-    {
-      question: "What is the chemical symbol for gold?",
-      answer: "Au",
-    },
-    {
-      question: "What is the largest planet in our solar system?",
-      answer: "Jupiter",
-    },
-  ];
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+
+  useEffect(() => {
+    const fetchFlashcards = async () => {
+      const response = await fetch("/api/flashcards");
+      const data: Flashcard[] = await response.json();
+      setFlashcards(data);
+    };
+
+    fetchFlashcards();
+  }, []);
+
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % flashcards.length);
     setIsFlipped(false);
   };
+
   const handlePrev = () => {
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + flashcards.length) % flashcards.length
     );
     setIsFlipped(false);
   };
+
   const handleFlip = () => {
     setIsFlipped((prevState) => !prevState);
   };
+
+  if (flashcards.length === 0) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-background">
       <div className="max-w-md w-full">
@@ -84,11 +86,20 @@ export function FlashCards() {
             Previous
           </button>
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-muted rounded-full mr-2" />
-            <div className="w-2 h-2 bg-muted rounded-full mr-2" />
-            <div className="w-2 h-2 bg-primary rounded-full mr-2" />
-            <div className="w-2 h-2 bg-muted rounded-full mr-2" />
-            <div className="w-2 h-2 bg-muted rounded-full mr-2" />
+            {flashcards.map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full mr-2 transition-colors duration-300 ${
+                  index === currentIndex
+                    ? "bg-primary"
+                    : "bg-muted hover:bg-muted/90 cursor-pointer"
+                }`}
+                onClick={() => {
+                  setCurrentIndex(index);
+                  setIsFlipped(false);
+                }}
+              />
+            ))}
           </div>
           <button
             className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
