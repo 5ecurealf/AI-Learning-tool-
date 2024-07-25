@@ -1,6 +1,49 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
+interface Performance {
+  mathematics: number;
+  english: number;
+  science: number;
+}
+
+interface Analysis {
+  mathematics: string;
+  english: string;
+  science: string;
+}
+
+interface TopicsToRevise {
+  mathematics: string[];
+  english: string[];
+  science: string[];
+}
+
+interface ResultsData {
+  testScore: number;
+  performance: Performance;
+  analysis: Analysis;
+  topicsToRevise: TopicsToRevise;
+}
+
 export function ResultsAnalysis() {
+  const [data, setData] = useState<ResultsData | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/api/test/results");
+      const resultData: ResultsData = await response.json();
+      setData(resultData);
+    };
+
+    fetchData();
+  }, []);
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="bg-background text-foreground">
       <header className="py-12 px-4 md:px-6 text-center">
@@ -17,7 +60,9 @@ export function ResultsAnalysis() {
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold">Test Score</h2>
             <div className="mt-8 flex flex-col items-center">
-              <div className="text-7xl font-bold text-primary">92</div>
+              <div className="text-7xl font-bold text-primary">
+                {data.testScore}
+              </div>
               <span className="mt-2 text-4xl font-bold">%</span>
               <p className="mt-4 text-muted-foreground">
                 Congratulations! You have achieved an excellent score on the
@@ -30,60 +75,29 @@ export function ResultsAnalysis() {
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold">Performance Analysis</h2>
             <div className="mt-8 grid gap-6">
-              <div>
-                <h3 className="text-lg font-semibold">Mathematics</h3>
-                <div className="mt-2 flex items-center">
-                  <div className="w-full bg-muted rounded-full h-4">
-                    <div
-                      className="bg-primary rounded-full h-4"
-                      style={{ width: "85%" }}
-                    />
+              {Object.entries(data.performance).map(
+                ([subject, score], index) => (
+                  <div key={index}>
+                    <h3 className="text-lg font-semibold capitalize">
+                      {subject}
+                    </h3>
+                    <div className="mt-2 flex items-center">
+                      <div className="w-full bg-muted rounded-full h-4">
+                        <div
+                          className="bg-primary rounded-full h-4"
+                          style={{ width: `${score}%` }}
+                        />
+                      </div>
+                      <span className="ml-4 text-muted-foreground">
+                        {score}%
+                      </span>
+                    </div>
+                    <p className="mt-2 text-muted-foreground">
+                      {data.analysis[subject as keyof Analysis]}
+                    </p>
                   </div>
-                  <span className="ml-4 text-muted-foreground">85%</span>
-                </div>
-                <p className="mt-2 text-muted-foreground">
-                  You performed exceptionally well in the mathematics section,
-                  demonstrating a strong grasp of the concepts. However, you
-                  could improve your problem-solving skills by practicing more
-                  complex word problems.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">English</h3>
-                <div className="mt-2 flex items-center">
-                  <div className="w-full bg-muted rounded-full h-4">
-                    <div
-                      className="bg-primary rounded-full h-4"
-                      style={{ width: "75%" }}
-                    />
-                  </div>
-                  <span className="ml-4 text-muted-foreground">75%</span>
-                </div>
-                <p className="mt-2 text-muted-foreground">
-                  Your performance in the English section was good, but you
-                  could improve your reading comprehension and writing skills.
-                  Consider focusing on practice exercises that target these
-                  areas.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Science</h3>
-                <div className="mt-2 flex items-center">
-                  <div className="w-full bg-muted rounded-full h-4">
-                    <div
-                      className="bg-primary rounded-full h-4"
-                      style={{ width: "65%" }}
-                    />
-                  </div>
-                  <span className="ml-4 text-muted-foreground">65%</span>
-                </div>
-                <p className="mt-2 text-muted-foreground">
-                  Your science performance was relatively weaker compared to
-                  other subjects. You should focus on strengthening your
-                  understanding of scientific concepts and improving your
-                  problem-solving skills in this area.
-                </p>
-              </div>
+                )
+              )}
             </div>
           </div>
         </section>
@@ -91,30 +105,20 @@ export function ResultsAnalysis() {
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold">Topics to Revise</h2>
             <div className="mt-8 grid gap-4">
-              <div>
-                <h3 className="text-lg font-semibold">Mathematics</h3>
-                <ul className="list-disc pl-6 text-muted-foreground">
-                  <li>Complex word problems</li>
-                  <li>Algebra concepts</li>
-                  <li>Geometry formulas</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">English</h3>
-                <ul className="list-disc pl-6 text-muted-foreground">
-                  <li>Reading comprehension strategies</li>
-                  <li>Essay writing structure</li>
-                  <li>Grammar and punctuation rules</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Science</h3>
-                <ul className="list-disc pl-6 text-muted-foreground">
-                  <li>Scientific method and hypothesis testing</li>
-                  <li>Principles of physics</li>
-                  <li>Biological processes</li>
-                </ul>
-              </div>
+              {Object.entries(data.topicsToRevise).map(
+                ([subject, topics], index) => (
+                  <div key={index}>
+                    <h3 className="text-lg font-semibold capitalize">
+                      {subject}
+                    </h3>
+                    <ul className="list-disc pl-6 text-muted-foreground">
+                      {(topics as string[]).map((topic, topicIndex) => (
+                        <li key={topicIndex}>{topic}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
