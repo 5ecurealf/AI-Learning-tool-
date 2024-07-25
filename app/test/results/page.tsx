@@ -1,3 +1,5 @@
+import { ResultsAnalysis } from "@/components/results-analysis";
+
 export default function Page() {
-  return <p>Results Cards Page</p>;
+  return <ResultsAnalysis></ResultsAnalysis>;
 }

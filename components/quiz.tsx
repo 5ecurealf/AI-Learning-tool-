@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ export function Quiz({ questions }: QuizProps) {
   const [userResponses, setUserResponses] = useState<{ [key: string]: string }>(
     {}
   );
+  const router = useRouter();
 
   const handleResponseChange = (questionIndex: number, value: string) => {
     setUserResponses({
@@ -48,6 +50,7 @@ export function Quiz({ questions }: QuizProps) {
 
     if (response.ok) {
       console.log("Quiz submitted successfully");
+      router.push("/test/results");
     } else {
       console.error("Failed to submit quiz");
     }
