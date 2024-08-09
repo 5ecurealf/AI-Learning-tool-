@@ -5,42 +5,38 @@ import { NextResponse } from "next/server";
 const resultsData = {
   testScore: 92,
   performance: {
-    mathematics: 85,
-    english: 75,
-    science: 65,
-    history: 70, // New topic added
+    photosynthesis: 85,
+    plant_structure: 75,
+    plant_reproduction: 65,
+    plant_growth: 50, // New topic with a lower score added
   },
   analysis: {
-    mathematics:
-      "You performed exceptionally well in the mathematics section, demonstrating a strong grasp of the concepts. However, you could improve your problem-solving skills by practicing more complex word problems.",
-    english:
-      "Your performance in the English section was good, but you could improve your reading comprehension and writing skills. Consider focusing on practice exercises that target these areas.",
-    science:
-      "Your science performance was relatively weaker compared to other subjects. You should focus on strengthening your understanding of scientific concepts and improving your problem-solving skills in this area.",
-    history:
-      "Your performance in history shows a good understanding of historical events, but you could benefit from a deeper analysis of historical contexts and causes.", // New topic analysis added
+    photosynthesis:
+      "You performed exceptionally well in the photosynthesis section, demonstrating a strong grasp of the concepts. However, you could improve your understanding of the detailed mechanisms by reviewing the Calvin cycle.",
+    plant_structure:
+      "Your performance in the plant structure section was good, but you could improve your knowledge of root and stem functions. Consider focusing on these areas to strengthen your understanding.",
+    plant_reproduction:
+      "Your plant reproduction performance was relatively weaker compared to other subjects. You should focus on strengthening your understanding of pollination and seed dispersal mechanisms.",
+    plant_growth:
+      "Your performance in the plant growth section was the weakest. You should focus on understanding the factors affecting plant growth, including nutrient uptake, water transport, and hormonal regulation.",
   },
   topicsToRevise: {
-    mathematics: [
-      "Complex word problems",
-      "Algebra concepts",
-      "Geometry formulas",
+    photosynthesis: [
+      "Light-dependent reactions",
+      "Calvin cycle",
+      "Chloroplast structure",
     ],
-    english: [
-      "Reading comprehension strategies",
-      "Essay writing structure",
-      "Grammar and punctuation rules",
+    plant_structure: ["Root functions", "Stem anatomy", "Leaf adaptations"],
+    plant_reproduction: [
+      "Pollination processes",
+      "Seed dispersal methods",
+      "Flower structures",
     ],
-    science: [
-      "Scientific method and hypothesis testing",
-      "Principles of physics",
-      "Biological processes",
+    plant_growth: [
+      "Nutrient uptake",
+      "Water transport in plants",
+      "Hormonal regulation of growth",
     ],
-    history: [
-      "Important historical events",
-      "Historical analysis and interpretation",
-      "Historical contexts",
-    ], // New topic added
   },
 };
 

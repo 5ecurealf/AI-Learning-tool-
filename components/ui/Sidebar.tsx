@@ -11,6 +11,7 @@ import {
   TestTubeIcon,
   WebcamIcon,
 } from "@/components/ui/icons"; // Adjust the import paths as necessary
+import { useContext } from "react";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -27,6 +28,11 @@ export function Sidebar() {
       label: "Revise",
     },
     {
+      href: "/chat",
+      icon: <WebcamIcon className="w-5 h-5 mr-2" />,
+      label: "Chat",
+    },
+    {
       href: "/test",
       icon: <TestTubeIcon className="w-5 h-5 mr-2" />,
       label: "Test",
@@ -35,11 +41,6 @@ export function Sidebar() {
       href: "/test/results",
       icon: <CheckIcon className="w-5 h-5 mr-2" />,
       label: "Results",
-    },
-    {
-      href: "/chat",
-      icon: <WebcamIcon className="w-5 h-5 mr-2" />,
-      label: "Chat",
     },
   ];
 
