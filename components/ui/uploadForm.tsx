@@ -2,46 +2,59 @@
 
 import { useState } from "react";
 import { Button } from "./button";
-
 type Props = {
-  /** when passing down the state setter function returned by `useState` to a child component. `number` is an example, swap out with whatever the type of your state */
-  setState: React.Dispatch<React.SetStateAction<boolean>>;
+  setTopics: React.Dispatch<React.SetStateAction<string[]>>; // Topics is an array of strings
+  threadId: string | null;
 };
 
-export function UploadForm({ setState }: Props) {
-  const [file, setFile] = useState<File>();
+export function UploadForm({ setTopics, threadId }: Props) {
+  const [file, setFile] = useState<File | null>();
+  const [message, setMessage] = useState("");
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
+    if (!threadId) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("purpose", "assistants");
+    formData.append("threadId", threadId);
 
     try {
-      const data = new FormData();
-      data.set("file", file);
-
       const res = await fetch("/api/upload", {
         method: "POST",
-        body: data,
+        body: formData,
       });
-      // handle the error
-      if (!res.ok) throw new Error(await res.text());
-      setState(true);
+
+      const data = await res.json();
+      if (data.success)
+        setMessage(`File uploaded and added to the conversation.`);
+      console.log(data.topics.topics);
+      setFile(null);
+
+      // Assuming `result.topics` is an array of strings from the server response
+      if (data.topics.topics && Array.isArray(data.topics.topics)) {
+        setTopics(data.topics.topics); // Pass topics to parent
+      }
     } catch (e: any) {
-      // Handle errors here
-      console.error(e);
+      console.error("Error uploading file:", e);
     }
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        type="file"
-        name="file"
-        onChange={(e) => setFile(e.target.files?.[0])}
-      />
-      <Button type="submit" value="Upload">
-        Upload
-      </Button>
-    </form>
+    <>
+      <form onSubmit={onSubmit}>
+        <input
+          type="file"
+          name="file"
+          onChange={(e) => setFile(e.target.files?.[0])}
+        />
+        <Button type="submit" value="Upload">
+          Upload
+        </Button>
+      </form>
+      {message && <p className="text-sm text-gray-600">{message}</p>}
+    </>
   );
 }

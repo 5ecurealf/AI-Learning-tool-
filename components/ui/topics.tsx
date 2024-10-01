@@ -5,35 +5,21 @@ import { Label } from "./label";
 import { Input } from "./input";
 import { useRouter } from "next/navigation";
 
-type Topic = {
-  id: number;
-  title: string;
+type TopicsProps = {
+  topics: string[]; // Topics is an array of strings
 };
 
-const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
-  const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopics, setSelectedTopics] = useState<number[]>([]);
+const Topics = ({ topics }: TopicsProps) => {
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [textInput, setTextInput] = useState<string>("");
   const router = useRouter();
 
-  useEffect(() => {
-    if (fileUploaded) {
-      fetch("/api/topics")
-        .then((res) => res.json())
-        .then((data) => {
-          setTopics(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching topics:", error);
-        });
-    }
-  }, [fileUploaded]);
-
-  const toggleTopic = (id: number) => {
+  // Toggle topic selection based on the topic string
+  const toggleTopic = (topic: string) => {
     setSelectedTopics((prevSelectedTopics) =>
-      prevSelectedTopics.includes(id)
-        ? prevSelectedTopics.filter((topicId) => topicId !== id)
-        : [...prevSelectedTopics, id]
+      prevSelectedTopics.includes(topic)
+        ? prevSelectedTopics.filter((selected) => selected !== topic)
+        : [...prevSelectedTopics, topic]
     );
   };
 
@@ -42,16 +28,9 @@ const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
   };
 
   const postSelectedTopics = async () => {
-    const selectedTitles = selectedTopics
-      .map((id) => {
-        const topic = topics.find((t) => t.id === id);
-        return topic ? topic.title : "";
-      })
-      .filter((title) => title !== "");
-
     const payload = {
-      titles: selectedTitles,
-      userInput: textInput,
+      titles: selectedTopics, // Selected topics strings
+      userInput: textInput, // User input from text field
     };
 
     try {
@@ -68,32 +47,27 @@ const Topics = ({ fileUploaded }: { fileUploaded: boolean }) => {
       }
 
       console.log("Successfully posted data:", payload);
-      router.push("/revise");
+      router.push("/revise"); // Navigate to another page after submission
     } catch (error) {
       console.error("Error posting data:", error);
     }
   };
 
-  useEffect(() => {
-    console.log("Selected Topics:", selectedTopics);
-    // Use selectedTopics elsewhere as needed
-  }, [selectedTopics]);
-
   return (
     <section className="mb-8">
       <h2 className="mb-2 text-xl font-semibold">Topics to learn</h2>
       <p className="mb-4 text-gray-600">
-        Here are some suggested topics to learn from
+        Select topics to learn from and provide additional input.
       </p>
       <div className="grid grid-cols-4 gap-4 mb-4">
-        {topics.map((t) => (
+        {topics.map((topic) => (
           <Button
-            key={t.id}
-            onClick={() => toggleTopic(t.id)}
+            key={topic}
+            onClick={() => toggleTopic(topic)}
             variant="default"
-            selected={selectedTopics.includes(t.id)}
+            selected={selectedTopics.includes(topic)}
           >
-            {t.title}
+            {topic}
           </Button>
         ))}
       </div>

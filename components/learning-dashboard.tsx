@@ -9,7 +9,7 @@ import ThreadIdViewer from "./ThreadIdViewer";
 
 export function LearningDashboard() {
   const { threadId, setThreadId } = useThread();
-  const [fileUploaded, setFileUploaded] = useState(false);
+  const [topics, setTopics] = useState<string[]>([]); // Topics is an array of strings
 
   useEffect(() => {
     if (!threadId) {
@@ -25,17 +25,16 @@ export function LearningDashboard() {
 
   return (
     <div className="flex min-h-screen">
-      {/* main page  */}
       <main className="flex-1 p-8">
         <h1 className="mb-4 text-3xl font-bold text-primary">Data Ingest</h1>
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold">Resources</h2>
           <div className="flex items-center justify-center p-8 border-2 border-dashed rounded-lg bg-blue-50">
-            <UploadForm setState={setFileUploaded}></UploadForm>
+            <UploadForm setTopics={setTopics} threadId={threadId} />
           </div>
         </section>
-        {fileUploaded && <Topics fileUploaded={fileUploaded} />}
-        <ThreadIdViewer></ThreadIdViewer>
+        {topics.length > 0 && <Topics topics={topics} />}
+        <ThreadIdViewer />
       </main>
     </div>
   );
