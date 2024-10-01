@@ -1,4 +1,5 @@
 import { FlashCards } from "@/components/flash-cards";
+import ThreadIdViewer from "@/components/ThreadIdViewer";
 
 export default function Page() {
   return (
@@ -13,6 +14,7 @@ export default function Page() {
         Revision Cards Page
       </p>
       <FlashCards></FlashCards>
+      <ThreadIdViewer></ThreadIdViewer>
     </>
   );
 }

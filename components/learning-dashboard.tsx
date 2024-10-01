@@ -3,9 +3,26 @@
 import { useState } from "react";
 import { UploadForm } from "./ui/uploadForm";
 import Topics from "./ui/topics";
+import { useThread } from "../contexts/ThreadContext";
+import { useEffect } from "react";
+import ThreadIdViewer from "./ThreadIdViewer";
 
 export function LearningDashboard() {
+  const { threadId, setThreadId } = useThread();
   const [fileUploaded, setFileUploaded] = useState(false);
+
+  useEffect(() => {
+    if (!threadId) {
+      fetch("/api/assistant/threads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "createThread" }),
+      })
+        .then((res) => res.json())
+        .then((data) => setThreadId(data.threadId));
+    }
+  }, [threadId, setThreadId]);
+
   return (
     <div className="flex min-h-screen">
       {/* main page  */}
@@ -18,6 +35,7 @@ export function LearningDashboard() {
           </div>
         </section>
         {fileUploaded && <Topics fileUploaded={fileUploaded} />}
+        <ThreadIdViewer></ThreadIdViewer>
       </main>
     </div>
   );

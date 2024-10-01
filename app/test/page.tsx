@@ -1,7 +1,7 @@
 "use client";
 import { Quiz, Question } from "@/components/quiz";
 import { useState, useEffect } from "react";
-
+import ThreadIdViewer from "@/components/ThreadIdViewer";
 export default function Page() {
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -27,6 +27,7 @@ export default function Page() {
         Test Page
       </p>
       <Quiz questions={questions}></Quiz>
+      <ThreadIdViewer></ThreadIdViewer>
     </>
   );
 }
