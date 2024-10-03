@@ -83,7 +83,7 @@ async function add_message(thread_id: string) {
   const threadMessage = await openai.beta.threads.messages.create(thread_id, {
     role: "user",
     content:
-      'Based on the file I uploaded, can you suggest up to 8 topics that I could learn about? Keep the titles short so I can use them as button titles. Return the answer in a JSON format like this: [{"topic": "Algebra"}, {"topic": "Equations"}, {"topic": "Graphs"}].',
+      "Based on the file I uploaded, can you suggest up to 8 topics that I could learn about? Keep the titles short so I can use them as button titles",
   });
   console.log("add_message response: ", threadMessage);
   return threadMessage;
@@ -94,7 +94,9 @@ async function cancel_run(thread_id: string, run_id: string) {
 }
 
 async function delete_last_message(thread_id: string) {
-  const threadMessages = await openai.beta.threads.messages.list(thread_id);
+  const threadMessages = await openai.beta.threads.messages.list(thread_id, {
+    order: "asc",
+  });
 
   const lastUserMessage = threadMessages.data
     .filter((message) => message.role === "user")
