@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useFlashcards } from "@/contexts/FlashcardsContext";
 
 export interface Flashcard {
   question: string;
@@ -8,19 +9,9 @@ export interface Flashcard {
 }
 
 export function FlashCards() {
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const { flashcards } = useFlashcards();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-
-  useEffect(() => {
-    const fetchFlashcards = async () => {
-      const response = await fetch("/api/flashcards");
-      const data: Flashcard[] = await response.json();
-      setFlashcards(data);
-    };
-
-    fetchFlashcards();
-  }, []);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % flashcards.length);
@@ -38,7 +29,7 @@ export function FlashCards() {
     setIsFlipped((prevState) => !prevState);
   };
 
-  if (flashcards.length === 0) {
+  if (!flashcards) {
     return <div>Loading...</div>;
   }
 

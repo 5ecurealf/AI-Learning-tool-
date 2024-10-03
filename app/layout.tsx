@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { Sidebar } from "@/components/ui/Sidebar"; // Adjust the import path as needed
 import { ThreadProvider } from "@/contexts/ThreadContext";
+import { FlashcardsProvider } from "@/contexts/FlashcardsContext";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -25,10 +26,12 @@ export default function Layout({ children }) {
         className={cn("antialiased", fontHeading.variable, fontBody.variable)}
       >
         <ThreadProvider>
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <main className="flex-1 p-8">{children}</main>
-          </div>
+          <FlashcardsProvider>
+            <div className="flex min-h-screen">
+              <Sidebar />
+              <main className="flex-1 p-8">{children}</main>
+            </div>
+          </FlashcardsProvider>
         </ThreadProvider>
       </body>
     </html>

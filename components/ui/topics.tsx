@@ -4,6 +4,9 @@ import { Button } from "./button";
 import { Label } from "./label";
 import { Input } from "./input";
 import { useRouter } from "next/navigation";
+import { useFlashcards } from "@/contexts/FlashcardsContext";
+import { useThread } from "@/contexts/ThreadContext";
+import { threadId } from "worker_threads";
 
 type TopicsProps = {
   topics: string[]; // Topics is an array of strings
@@ -12,6 +15,8 @@ type TopicsProps = {
 const Topics = ({ topics }: TopicsProps) => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [textInput, setTextInput] = useState<string>("");
+  const { setFlashcards } = useFlashcards();
+  const { threadId } = useThread();
   const router = useRouter();
 
   // Toggle topic selection based on the topic string
@@ -31,6 +36,7 @@ const Topics = ({ topics }: TopicsProps) => {
     const payload = {
       titles: selectedTopics, // Selected topics strings
       userInput: textInput, // User input from text field
+      threadId: threadId,
     };
 
     try {
@@ -42,11 +48,17 @@ const Topics = ({ topics }: TopicsProps) => {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
+      const data = await response.json();
+
+      if (!data.success) {
         throw new Error("Network response was not ok");
       }
-
       console.log("Successfully posted data:", payload);
+      if (!data.flashcards) {
+        throw new Error("No flashcard data");
+      }
+      console.log("Successfully obtained data:", data.flashcards);
+      setFlashcards(data.flashcards.flashcards);
       router.push("/revise"); // Navigate to another page after submission
     } catch (error) {
       console.error("Error posting data:", error);
