@@ -6,10 +6,12 @@ import Topics from "./ui/topics";
 import { useThread } from "../contexts/ThreadContext";
 import { useEffect } from "react";
 import ThreadIdViewer from "./ThreadIdViewer";
+import { useTopics } from "@/contexts/TopicsContext";
 
 export function LearningDashboard() {
   const { threadId, setThreadId } = useThread();
-  const [topics, setTopics] = useState<string[]>([]); // Topics is an array of strings
+  const { topics } = useTopics();
+  // const [topics, setTopics] = useState<string[]>([]); // Topics is an array of strings
 
   useEffect(() => {
     if (!threadId) {
@@ -30,7 +32,7 @@ export function LearningDashboard() {
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold">Resources</h2>
           <div className="flex items-center justify-center p-8 border-2 border-dashed rounded-lg bg-blue-50">
-            <UploadForm setTopics={setTopics} threadId={threadId} />
+            <UploadForm threadId={threadId} />
           </div>
         </section>
         {topics.length > 0 && <Topics topics={topics} />}

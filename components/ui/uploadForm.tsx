@@ -1,15 +1,16 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "./button";
+import { useTopics } from "@/contexts/TopicsContext";
+
 type Props = {
-  setTopics: React.Dispatch<React.SetStateAction<string[]>>; // Topics is an array of strings
   threadId: string | null;
 };
 
-export function UploadForm({ setTopics, threadId }: Props) {
+export function UploadForm({ threadId }: Props) {
   const [file, setFile] = useState<File | null>();
   const [message, setMessage] = useState("");
+  const { setTopics } = useTopics();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
