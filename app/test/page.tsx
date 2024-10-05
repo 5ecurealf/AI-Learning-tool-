@@ -1,15 +1,16 @@
 "use client";
-import { Quiz, Question } from "@/components/quiz";
+import { Quiz, Quiz_data } from "@/components/quiz";
 import { useState, useEffect } from "react";
 import ThreadIdViewer from "@/components/ThreadIdViewer";
+
 export default function Page() {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [quiz_data, setQuizdata] = useState<Quiz_data>();
 
   useEffect(() => {
     const fetchQuestions = async () => {
       const response = await fetch("/api/test");
-      const data: Question[] = await response.json();
-      setQuestions(data);
+      const data: Quiz_data = await response.json();
+      setQuizdata(data);
     };
 
     fetchQuestions();
@@ -26,7 +27,7 @@ export default function Page() {
       >
         Test Page
       </p>
-      <Quiz questions={questions}></Quiz>
+      {quiz_data && <Quiz quiz={quiz_data}></Quiz>}
       <ThreadIdViewer></ThreadIdViewer>
     </>
   );
