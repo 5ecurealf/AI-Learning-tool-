@@ -96,9 +96,13 @@ export default function Page() {
   const [runId, setRunId] = useState<string>();
   const [toolCallId, setToolCallId] = useState<string>();
   const { topics } = useTopics();
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   useEffect(() => {
-    if (!threadId || !topics || !Array.isArray(topics)) return; // Ensure threadId and topics are valid
+    // Only make the request if threadId and topics are valid and not already loading
+    if (!threadId || !topics || isLoading) {
+      return;
+    }
 
     const fetchQuiz = async () => {
       setIsLoading(true); // Set loading to true before making the request
