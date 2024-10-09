@@ -40,24 +40,56 @@ const openai = new OpenAI({
 export async function POST(request: Request) {
   try {
     const { threadId, topics } = await request.json();
-    if (!threadId) return NextResponse.json({ success: "false" });
-    if (!topics) return NextResponse.json({ success: "false" });
-    console.log("server side : Received data:", { threadId, topics });
 
+    console.log(
+      `[SERVER] Received request with threadId: ${threadId}, topics: ${topics}`
+    );
+
+    if (!threadId) {
+      console.error(`[SERVER] Missing threadId in the request`);
+      return NextResponse.json({ success: false });
+    }
+    if (!topics) {
+      console.error(`[SERVER] Missing topics in the request`);
+      return NextResponse.json({ success: false });
+    }
+
+    // Log prompt creation
     const prompt = generateTestsPrompt(topics);
+    console.log(`[SERVER] Generated prompt for topics: ${prompt}`);
 
-    await add_message(threadId, prompt);
+    // Adding message to the thread
+    const threadMessage = await add_message(threadId, prompt);
+    console.log(`[SERVER] add_message response:`, threadMessage);
+
+    // Run the thread
     let run = await run_thread(threadId);
+    console.log(`[SERVER] run_thread initial response:`, run);
+
     run = await waitOnRun(run, threadId);
+    console.log(`[SERVER] run_thread final status after waiting:`, run);
+
     const quiz_string =
-      run.required_action?.submit_tool_outputs.tool_calls[0].function.arguments;
+      run.required_action?.submit_tool_outputs.tool_calls[0]?.function
+        .arguments;
+    const tool_call_id =
+      run.required_action?.submit_tool_outputs.tool_calls[0]?.id;
+
     if (quiz_string) {
       const quiz = JSON.parse(quiz_string);
-      return NextResponse.json({ success: true, quiz });
+      console.log(`[SERVER] Successfully generated quiz data`, quiz);
+      return NextResponse.json({
+        success: true,
+        quiz: quiz,
+        runId: run.id,
+        tool_call_id: tool_call_id,
+      });
     }
-    return NextResponse.json({ success: "false" });
+
+    console.error(`[SERVER] Quiz string not available in run`);
+    return NextResponse.json({ success: false });
   } catch (error) {
-    console.error("Error processing request:", error);
+    console.error(`[SERVER] Error processing request:`, error);
     return NextResponse.json(
       { error: "Failed to process data" },
       { status: 500 }
@@ -66,38 +98,46 @@ export async function POST(request: Request) {
 }
 
 async function run_thread(thread_id: string) {
+  console.log(`[SERVER] Running thread for thread_id: ${thread_id}`);
+
   const run = await openai.beta.threads.runs.create(thread_id, {
     assistant_id: process.env.OPENAI_ASSISTANT_ID!,
   });
-  console.log(run);
+
+  console.log(`[SERVER] run_thread response:`, run);
   return run;
 }
 
 async function add_message(thread_id: string, prompt: string) {
+  console.log(
+    `[SERVER] Adding message to thread: ${thread_id} with prompt: ${prompt}`
+  );
+
   const threadMessage = await openai.beta.threads.messages.create(thread_id, {
     role: "user",
     content: prompt,
   });
-  console.log("add_message response: ", threadMessage);
+
+  console.log(`[SERVER] add_message response:`, threadMessage);
   return threadMessage;
 }
 
 async function waitOnRun(run: OpenAI.Beta.Threads.Runs.Run, thread_id: string) {
-  // Define a helper function to delay execution
+  console.log(
+    `[SERVER] Waiting for run to complete for thread_id: ${thread_id}`
+  );
+
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // Loop until the run's status is neither "queued" nor "in_progress"
   while (run.status === "queued" || run.status === "in_progress") {
-    // Retrieve the updated run status
+    console.log(`[SERVER] Run status: ${run.status}. Checking again...`);
     run = await openai.beta.threads.runs.retrieve(thread_id, run.id);
-
-    // Wait for 500 milliseconds before the next check
-    await sleep(500);
+    await sleep(500); // Wait 500 ms before checking again
   }
 
-  // Return the final run object
+  console.log(`[SERVER] Run completed with status: ${run.status}`);
   return run;
 }
 // Define the function to generate the prompt
