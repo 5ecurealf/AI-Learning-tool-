@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useThread } from "@/contexts/ThreadContext";
+import { tool } from "ai";
 
 interface Question {
   question_text: string;
@@ -18,13 +20,16 @@ export interface Quiz_data {
 
 interface QuizProps {
   quiz: Quiz_data;
+  runId: string | undefined;
+  toolCallId: string | undefined;
 }
 
-export const Quiz: React.FC<QuizProps> = ({ quiz }) => {
+export const Quiz: React.FC<QuizProps> = ({ quiz, runId, toolCallId }) => {
   // Initialize an array of responses that matches the number of questions
   const [userResponses, setUserResponses] = useState<string[]>(
     Array(quiz.questions.length).fill("") // Ensure we start with an empty string for each question
   );
+  const { threadId } = useThread();
 
   // Handle responses for both free-response and multiple-choice questions
   const handleResponseChange = (questionIndex: number, value: string) => {
@@ -35,12 +40,17 @@ export const Quiz: React.FC<QuizProps> = ({ quiz }) => {
 
   const handleSubmit = async () => {
     console.log("User Responses (array of strings):", userResponses);
-
+    const payload = {
+      runId: runId,
+      threadId: threadId,
+      toolCallId: toolCallId,
+      userResponses: userResponses,
+    };
     // Submit the array of responses to the backend
-    const response = await fetch("/api/submit-quiz", {
+    const response = await fetch("/api/test/submit-quiz", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userResponses), // Now sending the array directly
+      body: JSON.stringify(payload), // Now sending the array directly
     });
 
     if (response.ok) {
