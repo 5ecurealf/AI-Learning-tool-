@@ -2,29 +2,26 @@
 
 import { useState, useEffect } from "react";
 
-interface Performance {
-  mathematics: number;
-  english: number;
-  science: number;
+interface SubjectPerformance {
+  subject: string;
+  score: number;
 }
 
-interface Analysis {
-  mathematics: string;
-  english: string;
-  science: string;
+interface SubjectAnalysis {
+  subject: string;
+  feedback: string;
 }
 
-interface TopicsToRevise {
-  mathematics: string[];
-  english: string[];
-  science: string[];
+interface SubjectTopics {
+  subject: string;
+  topics: string[];
 }
 
 interface ResultsData {
   testScore: number;
-  performance: Performance;
-  analysis: Analysis;
-  topicsToRevise: TopicsToRevise;
+  performance: SubjectPerformance[];
+  analysis: SubjectAnalysis[];
+  topicsToRevise: SubjectTopics[];
 }
 
 export function ResultsAnalysis() {
@@ -56,6 +53,7 @@ export function ResultsAnalysis() {
         </p>
       </header>
       <main className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-6">
+        {/* Test Score Section */}
         <section>
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold">Test Score</h2>
@@ -71,54 +69,58 @@ export function ResultsAnalysis() {
             </div>
           </div>
         </section>
+
+        {/* Performance Analysis Section */}
         <section>
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold">Performance Analysis</h2>
             <div className="mt-8 grid gap-6">
-              {Object.entries(data.performance).map(
-                ([subject, score], index) => (
-                  <div key={index}>
-                    <h3 className="text-lg font-semibold capitalize">
-                      {subject}
-                    </h3>
-                    <div className="mt-2 flex items-center">
-                      <div className="w-full bg-muted rounded-full h-4">
-                        <div
-                          className="bg-primary rounded-full h-4"
-                          style={{ width: `${score}%` }}
-                        />
-                      </div>
-                      <span className="ml-4 text-muted-foreground">
-                        {score}%
-                      </span>
+              {data.performance.map((item, index) => (
+                <div key={index}>
+                  <h3 className="text-lg font-semibold capitalize">
+                    {item.subject}
+                  </h3>
+                  <div className="mt-2 flex items-center">
+                    <div className="w-full bg-muted rounded-full h-4">
+                      <div
+                        className="bg-primary rounded-full h-4"
+                        style={{ width: `${item.score}%` }}
+                      />
                     </div>
-                    <p className="mt-2 text-muted-foreground">
-                      {data.analysis[subject as keyof Analysis]}
-                    </p>
+                    <span className="ml-4 text-muted-foreground">
+                      {item.score}%
+                    </span>
                   </div>
-                )
-              )}
+                  <p className="mt-2 text-muted-foreground">
+                    {
+                      data.analysis.find(
+                        (analysisItem) => analysisItem.subject === item.subject
+                      )?.feedback
+                    }
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
+
+        {/* Topics to Revise Section */}
         <section>
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-bold">Topics to Revise</h2>
             <div className="mt-8 grid gap-4">
-              {Object.entries(data.topicsToRevise).map(
-                ([subject, topics], index) => (
-                  <div key={index}>
-                    <h3 className="text-lg font-semibold capitalize">
-                      {subject}
-                    </h3>
-                    <ul className="list-disc pl-6 text-muted-foreground">
-                      {(topics as string[]).map((topic, topicIndex) => (
-                        <li key={topicIndex}>{topic}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              )}
+              {data.topicsToRevise.map((item, index) => (
+                <div key={index}>
+                  <h3 className="text-lg font-semibold capitalize">
+                    {item.subject}
+                  </h3>
+                  <ul className="list-disc pl-6 text-muted-foreground">
+                    {item.topics.map((topic, topicIndex) => (
+                      <li key={topicIndex}>{topic}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         </section>
