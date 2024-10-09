@@ -101,12 +101,12 @@ export default function Page() {
     if (!threadId || !topics || !Array.isArray(topics)) return; // Ensure threadId and topics are valid
 
     const fetchQuiz = async () => {
+      setIsLoading(true); // Set loading to true before making the request
       try {
+        const payload = { threadId, topics };
         console.log(
           `[CLIENT] Fetching quiz data for threadId: ${threadId}, topics: ${topics}`
         );
-
-        const payload = { threadId, topics };
         const response = await fetch("/api/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -134,6 +134,8 @@ export default function Page() {
         setToolCallId(data.tool_call_id);
       } catch (error) {
         console.error(`[CLIENT] Error fetching quiz:`, error);
+      } finally {
+        setIsLoading(false); // Set loading to false after the request is done
       }
     };
 
