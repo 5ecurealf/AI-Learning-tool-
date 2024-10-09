@@ -33,30 +33,50 @@ export const Quiz: React.FC<QuizProps> = ({ quiz, runId, toolCallId }) => {
 
   // Handle responses for both free-response and multiple-choice questions
   const handleResponseChange = (questionIndex: number, value: string) => {
+    console.log(
+      `[CLIENT] Updating response for question ${questionIndex} with value: ${value}`
+    );
     const updatedResponses = [...userResponses];
     updatedResponses[questionIndex] = value; // Update the response for the correct question index
     setUserResponses(updatedResponses); // Update the state with the new responses array
   };
 
   const handleSubmit = async () => {
-    console.log("User Responses (array of strings):", userResponses);
+    console.log("[CLIENT] Submitting quiz with the following data:", {
+      runId,
+      threadId,
+      toolCallId,
+      userResponses,
+    });
+
     const payload = {
       runId: runId,
       threadId: threadId,
       toolCallId: toolCallId,
       userResponses: userResponses,
     };
-    // Submit the array of responses to the backend
-    const response = await fetch("/api/test/submit-quiz", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload), // Now sending the array directly
-    });
 
-    if (response.ok) {
-      console.log("Quiz submitted successfully");
-    } else {
-      console.error("Failed to submit quiz");
+    try {
+      const response = await fetch("/api/test/submit-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload), // Now sending the array directly
+      });
+
+      if (response.ok) {
+        console.log("[CLIENT] Quiz submitted successfully");
+        const responseData = await response.json();
+        console.log("[CLIENT] Server response data:", responseData);
+      } else {
+        console.error(
+          "[CLIENT] Failed to submit quiz. Status:",
+          response.status
+        );
+        const errorData = await response.json();
+        console.error("[CLIENT] Error details from server:", errorData);
+      }
+    } catch (error) {
+      console.error("[CLIENT] Error occurred during quiz submission:", error);
     }
   };
 
