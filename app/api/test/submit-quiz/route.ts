@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     );
 
     // Wait for the run to complete
-    run = await waitOnRun(runId, threadId);
+    run = await waitOnRun(run, threadId);
 
     // Cancel the run after getting the analysis
     await cancel_run(threadId, run.id);
@@ -59,12 +59,15 @@ async function submit_tool_outputs(
   thread_id: string,
   run_id: string,
   tool_call_id: string,
-  output: string
+  output: string[]
 ) {
   try {
     console.log(
       `[SERVER] Submitting tool outputs for thread: ${thread_id}, run: ${run_id}`
     );
+    // Convert the array (output) to a string
+    const stringifiedOutput = JSON.stringify(output);
+
     const run = await openai.beta.threads.runs.submitToolOutputs(
       thread_id,
       run_id,
@@ -72,7 +75,7 @@ async function submit_tool_outputs(
         tool_outputs: [
           {
             tool_call_id: tool_call_id,
-            output: output,
+            output: stringifiedOutput, // Pass the stringified output here
           },
         ],
       }
