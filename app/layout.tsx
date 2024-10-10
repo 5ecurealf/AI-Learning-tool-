@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/ui/Sidebar"; // Adjust the import path as 
 import { ThreadProvider } from "@/contexts/ThreadContext";
 import { FlashcardsProvider } from "@/contexts/FlashcardsContext";
 import { TopicsProvider } from "@/contexts/TopicsContext";
+import { QuizAnalysisProvider } from "@/contexts/TestAnalysisContext";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -29,10 +30,12 @@ export default function Layout({ children }) {
         <ThreadProvider>
           <FlashcardsProvider>
             <TopicsProvider>
-              <div className="flex min-h-screen">
-                <Sidebar />
-                <main className="flex-1 p-8">{children}</main>
-              </div>
+              <QuizAnalysisProvider>
+                <div className="flex min-h-screen">
+                  <Sidebar />
+                  <main className="flex-1 p-8">{children}</main>
+                </div>
+              </QuizAnalysisProvider>
             </TopicsProvider>
           </FlashcardsProvider>
         </ThreadProvider>

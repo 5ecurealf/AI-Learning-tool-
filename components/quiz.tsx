@@ -5,7 +5,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useThread } from "@/contexts/ThreadContext";
-import { tool } from "ai";
+import { useRouter } from "next/navigation";
+import { useQuizAnalysis } from "@/contexts/TestAnalysisContext";
 
 interface Question {
   question_text: string;
@@ -30,6 +31,8 @@ export const Quiz: React.FC<QuizProps> = ({ quiz, runId, toolCallId }) => {
     Array(quiz.questions.length).fill("") // Ensure we start with an empty string for each question
   );
   const { threadId } = useThread();
+  const router = useRouter();
+  const { setQuizAnalysis } = useQuizAnalysis();
 
   // Handle responses for both free-response and multiple-choice questions
   const handleResponseChange = (questionIndex: number, value: string) => {
@@ -67,6 +70,8 @@ export const Quiz: React.FC<QuizProps> = ({ quiz, runId, toolCallId }) => {
         console.log("[CLIENT] Quiz submitted successfully");
         const responseData = await response.json();
         console.log("[CLIENT] Server response data:", responseData);
+        setQuizAnalysis(responseData.quiz_analysis);
+        router.push("/test/results"); // Navigate to another page after submission
       } else {
         console.error(
           "[CLIENT] Failed to submit quiz. Status:",
