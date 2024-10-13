@@ -8,6 +8,8 @@ import { ThreadProvider } from "@/contexts/ThreadContext";
 import { FlashcardsProvider } from "@/contexts/FlashcardsContext";
 import { TopicsProvider } from "@/contexts/TopicsContext";
 import { QuizAnalysisProvider } from "@/contexts/TestAnalysisContext";
+import { FileProvider } from "@/contexts/FileIdContext";
+import { ChatThreadIdProvider } from "@/contexts/ChatThreadContext";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -31,10 +33,14 @@ export default function Layout({ children }) {
           <FlashcardsProvider>
             <TopicsProvider>
               <QuizAnalysisProvider>
-                <div className="flex min-h-screen">
-                  <Sidebar />
-                  <main className="flex-1 p-8">{children}</main>
-                </div>
+                <FileProvider>
+                  <ChatThreadIdProvider>
+                    <div className="flex min-h-screen">
+                      <Sidebar />
+                      <main className="flex-1 p-8">{children}</main>
+                    </div>
+                  </ChatThreadIdProvider>
+                </FileProvider>
               </QuizAnalysisProvider>
             </TopicsProvider>
           </FlashcardsProvider>

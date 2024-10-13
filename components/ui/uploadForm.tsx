@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "./button";
 import { useTopics } from "@/contexts/TopicsContext";
+import { useFileId } from "@/contexts/FileIdContext";
 
 type Props = {
   threadId: string | null;
@@ -11,6 +12,7 @@ export function UploadForm({ threadId }: Props) {
   const [file, setFile] = useState<File | null>();
   const [message, setMessage] = useState("");
   const { setTopics } = useTopics();
+  const { setFileId } = useFileId();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,8 +36,13 @@ export function UploadForm({ threadId }: Props) {
       console.log(data.topics.topics);
       setFile(null);
 
-      // Assuming `result.topics` is an array of strings from the server response
+      if (data.fileId) {
+        setFileId(data.fileId);
+        console.log(`[CLIENT] obtained and set fileId : ${data.fileId}`);
+      }
+
       if (data.topics.topics && Array.isArray(data.topics.topics)) {
+        // Assuming `result.topics` is an array of strings from the server response
         setTopics(data.topics.topics); // Pass topics to parent
       }
     } catch (e: any) {

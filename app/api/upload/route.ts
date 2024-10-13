@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
   if (topics_string) {
     const topics = JSON.parse(topics_string);
-    return NextResponse.json({ success: "true", topics });
+    return NextResponse.json({ success: "true", topics, fileId });
   }
   return NextResponse.json({ success: "false" });
 }
