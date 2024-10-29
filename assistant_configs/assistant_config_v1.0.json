@@ -1,0 +1,251 @@
+{
+  "version": "1.0",
+  "assistant": {
+    "id": "asst_LIQTDZbJieZOOuOEi19t87zL",
+    "object": "assistant",
+    "created_at": 1721909272,
+    "name": "Document Tutor",
+    "description": null,
+    "model": "gpt-4o-2024-08-06",
+    "instructions": "You are a helpful tutor. Your primary task is to read documents and provide detailed and informative responses based on the content of those documents.",
+    "tools": [
+      {
+        "type": "code_interpreter"
+      },
+      {
+        "type": "file_search",
+        "file_search": {
+          "ranking_options": {
+            "ranker": "default_2024_08_21",
+            "score_threshold": 0.0
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "display_revision_cards",
+          "description": "display questions & answers to user on uploaded material",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "flashcards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "question": {
+                      "type": "string",
+                      "description": "The question on the flashcard"
+                    },
+                    "answer": {
+                      "type": "string",
+                      "description": "The answer on the flashcard"
+                    }
+                  },
+                  "required": ["question", "answer"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["flashcards"],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "display_quiz",
+          "description": "display questions to user and wait for responses to those question",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "questions": {
+                "type": "array",
+                "description": "An array of questions, each with a title and potentially options (if multiple choice).",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "question_text": {
+                      "type": "string"
+                    },
+                    "question_type": {
+                      "type": "string",
+                      "enum": ["MULTIPLE_CHOICE", "FREE_RESPONSE"]
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": ["question_text", "question_type", "choices"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["title", "questions"],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "display_analysis_data",
+          "description": "Display test scores, and provide an analysis of the test performance",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "testScore": {
+                "type": "number",
+                "description": "The total test score in percentage"
+              },
+              "performance": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "description": "The name of the subject"
+                    },
+                    "score": {
+                      "type": "number",
+                      "description": "Score for the subject"
+                    }
+                  },
+                  "required": ["subject", "score"],
+                  "additionalProperties": false
+                },
+                "description": "Array of performance scores for each subject"
+              },
+              "analysis": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "description": "The name of the subject"
+                    },
+                    "feedback": {
+                      "type": "string",
+                      "description": "Analysis of the user's performance"
+                    }
+                  },
+                  "required": ["subject", "feedback"],
+                  "additionalProperties": false
+                },
+                "description": "Array of analysis results for each subject"
+              },
+              "topicsToRevise": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "description": "The name of the subject"
+                    },
+                    "topics": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Topics to revise for this subject"
+                    }
+                  },
+                  "required": ["subject", "topics"],
+                  "additionalProperties": false
+                },
+                "description": "Array of topics to revise for each subject"
+              }
+            },
+            "required": [
+              "testScore",
+              "performance",
+              "analysis",
+              "topicsToRevise"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "topic_suggestions",
+          "description": "function to generate topics based on file uploaded to thread",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "topics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "topic suggestion"
+                }
+              }
+            },
+            "required": ["topics"],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      }
+    ],
+    "top_p": 1.0,
+    "temperature": 1.0,
+    "tool_resources": {
+      "file_search": {
+        "vector_store_ids": []
+      },
+      "code_interpreter": {
+        "file_ids": []
+      }
+    },
+    "metadata": {},
+    "response_format": "auto"
+  },
+  "prompts": {
+    "topic_suggestions": {
+      "text": "Based on the file I uploaded, can you suggest up to 8 topics that I could learn about? Keep the titles short so I can use them as button titles.",
+      "version": "1.0"
+    },
+    "revision_cards": {
+      "text": "Based on the following topics: ${topicList}, and the user's specific request: \"${userInput}\", please generate a set of revision cards. Each card should include a question and an answer.",
+      "version": "1.0"
+    },
+    "quiz": {
+      "text": "Based on the following topics: ${topicList}, please generate a quiz of 10 questions. Include a mixture of open-ended and multiple choice questions.",
+      "version": "1.0"
+    },
+    "performance_analysis": {
+      "text": "Mark the quiz and perform an analysis based on the answers provided.",
+      "version": "1.0"
+    }
+  },
+  "workflow": {
+    "steps": [
+      "Generate topic suggestions before revision cards.",
+      "Generate a quiz after revision cards if user requests testing.",
+      "Analyze quiz performance only after quiz completion and submission."
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2024-10-29",
+      "version": "1.0",
+      "changes": "Initial setup for Document Tutor with tools for topic suggestion, revision card generation, quiz creation, and performance analysis."
+    }
+  ]
+}
