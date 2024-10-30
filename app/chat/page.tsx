@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useChatThreadId } from "@/contexts/ChatThreadContext";
 import ThreadIdViewer from "@/components/ThreadIdViewer";
 import { useFileId } from "@/contexts/FileIdContext";
@@ -11,6 +11,14 @@ export default function Page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]); // Trigger this effect whenever `messages` changes
 
   useEffect(() => {
     const getThread = async () => {
@@ -126,7 +134,10 @@ export default function Page() {
       </p>
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Chat with AI Assistant</h1>
-        <div className="bg-gray-100 p-4 h-96 overflow-y-auto mb-4 rounded">
+        <div
+          ref={scrollRef}
+          className="bg-gray-100 p-4 h-96 overflow-y-auto mb-4 rounded"
+        >
           {messages &&
             messages.map((message, index) => (
               <div

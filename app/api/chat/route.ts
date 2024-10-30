@@ -49,7 +49,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false });
 
       case "getMessages":
-        const messages = await openai.beta.threads.messages.list(threadId);
+        const messages = await openai.beta.threads.messages.list(threadId, {
+          order: "asc",
+        });
         console.log(`[SERVER] openai provides messages: ${messages.data}`);
 
         return NextResponse.json({ messages: messages.data });
