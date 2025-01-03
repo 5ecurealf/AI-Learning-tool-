@@ -5,90 +5,11 @@ import ThreadIdViewer from "@/components/ThreadIdViewer";
 import { useThread } from "@/contexts/ThreadContext";
 import { useTopics } from "@/contexts/TopicsContext";
 
-const quiz_mock_data: Quiz_data = {
-  title: "Shakespeare's Sonnets: Exploring Key Themes",
-  questions: [
-    {
-      question_text:
-        "How does Shakespeare use imagery in nature to depict love and beauty in his sonnets?",
-      question_type: "FREE_RESPONSE",
-      choices: [],
-    },
-    {
-      question_text:
-        "Which metaphor is frequently used by Shakespeare to illustrate the transience of time?",
-      question_type: "MULTIPLE_CHOICE",
-      choices: [
-        "A. The setting sun",
-        "B. A passing river",
-        "C. A summer's day",
-        "D. Autumn leaves",
-      ],
-    },
-    {
-      question_text: "What is the structure of a Shakespearean sonnet?",
-      question_type: "MULTIPLE_CHOICE",
-      choices: [
-        "A. Twelve lines with one couplet",
-        "B. 14 lines: three quatrains and a couplet",
-        "C. 16 lines with one quatrain",
-        "D. 12 lines in three tercets",
-      ],
-    },
-    {
-      question_text:
-        "In what ways do the sonnets explore Shakespeare's own self-reflection? Provide specific examples if possible.",
-      question_type: "FREE_RESPONSE",
-      choices: [],
-    },
-    {
-      question_text:
-        "What role does nature imagery play in discussing the theme of mortality in the sonnets?",
-      question_type: "MULTIPLE_CHOICE",
-      choices: [
-        "A. To illustrate the cyclical nature of life",
-        "B. To detract from the poem's main theme",
-        "C. As mere decoration",
-        "D. To focus on life's permanence",
-      ],
-    },
-    {
-      question_text:
-        "Discuss an example of how complex relationships are depicted in Shakespeare's sonnets.",
-      question_type: "FREE_RESPONSE",
-      choices: [],
-    },
-    {
-      question_text:
-        "Which emotion is primarily explored throughout many of Shakespeare's sonnets?",
-      question_type: "MULTIPLE_CHOICE",
-      choices: ["A. Anger", "B. Love", "C. Sadness", "D. Jealousy"],
-    },
-    {
-      question_text:
-        "How does Shakespeare address identity and legacy in his sonnets?",
-      question_type: "FREE_RESPONSE",
-      choices: [],
-    },
-    {
-      question_text:
-        "Which theme often contrasts personal desires with wider societal duties in the sonnets?",
-      question_type: "MULTIPLE_CHOICE",
-      choices: [
-        "A. Love vs. Duty",
-        "B. Wealth vs. Poverty",
-        "C. Honor vs. Shame",
-        "D. Ambition vs. Contentment",
-      ],
-    },
-    {
-      question_text:
-        "How does Shakespeare use poetic form to enhance the themes explored in his sonnets?",
-      question_type: "FREE_RESPONSE",
-      choices: [],
-    },
-  ],
-};
+// this component fetches the quiz data when the page loads
+// if the quiz data is available, then render the Quiz component
+// This functionality depends on the assistant function tools, and so there is a run that is waiting for the response,
+// therefore the test needs to be completed before the run expires (10 minutes)
+// if the user navigates away from page the quiz is lost, so the navigation to other pages needs to be disabled
 
 export default function Page() {
   const [quiz_data, setQuizdata] = useState<Quiz_data>();

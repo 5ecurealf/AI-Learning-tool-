@@ -8,6 +8,10 @@ import { useEffect } from "react";
 import ThreadIdViewer from "./ThreadIdViewer";
 import { useTopics } from "@/contexts/TopicsContext";
 
+// This component is loaded as the homepage. When the user starts the website, the first thing to do is generate a thread and set it to the Thread context
+// This component renders the form component "UploadForm" on the homepage
+// If the file is successfully uploaded, topics context will is set and so LearningDashboard component passing topics as a prop to the Topics component
+
 export function LearningDashboard() {
   const { threadId, setThreadId } = useThread();
   const { topics } = useTopics();

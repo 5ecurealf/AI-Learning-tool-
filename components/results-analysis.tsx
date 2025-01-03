@@ -1,6 +1,13 @@
 "use client";
 
 import { useQuizAnalysis } from "@/contexts/TestAnalysisContext";
+
+// Retrieves quiz analysis data from context and shows a loading state if unavailable.
+// Displays the test score prominently with a congratulatory message.
+// Provides a performance breakdown for each subject, including scores and feedback.
+// Lists topics for revision, categorized by subject.
+// Offers a clean and structured UI with sections for score, performance analysis, and topics to revise.
+
 interface SubjectPerformance {
   subject: string;
   score: number;

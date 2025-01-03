@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useFlashcards } from "@/contexts/FlashcardsContext";
 
+// This component renders the Flashcards contained in the Flashcard context
 export interface Flashcard {
   question: string;
   answer: string;
@@ -30,7 +31,11 @@ export function FlashCards() {
   };
 
   if (!flashcards) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        No flashcards available. Resubmit some topics if you haven't already.
+      </div>
+    );
   }
 
   return (

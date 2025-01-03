@@ -5,6 +5,28 @@ import ThreadIdViewer from "@/components/ThreadIdViewer";
 import { useFileId } from "@/contexts/FileIdContext";
 import { Message } from "openai/resources/beta/threads/messages.mjs";
 
+// This component renders the chat page where users interact with an AI assistant
+
+// Manage thread and file IDs using custom context hooks
+
+// State variables:
+// - `messages` stores chat messages
+// - `input` handles user text input
+// - `isLoading` tracks message send status
+
+// Auto-scroll to the latest message when `messages` updates
+
+// On load, create a new thread if no thread exists
+
+// Fetch messages when a new thread is created
+
+// Handle sending messages, updating the thread, and running the thread on the server
+
+// Render:
+// - Chat container showing messages
+// - Input form for user messages
+// - ThreadIdViewer component for debugging
+
 export default function Page() {
   const { chatThreadId, setChatThreadId } = useChatThreadId();
   const { fileId } = useFileId();

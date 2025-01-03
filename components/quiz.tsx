@@ -8,6 +8,11 @@ import { useThread } from "@/contexts/ThreadContext";
 import { useRouter } from "next/navigation";
 import { useQuizAnalysis } from "@/contexts/TestAnalysisContext";
 
+// Displays a quiz title and a series of questions, supporting multiple-choice and free-response formats.
+// Tracks user responses using state, updating them dynamically as users input answers.
+// Submits the quiz data, including responses and metadata (runId, threadId, toolCallId), to a backend endpoint.
+// On successful submission, updates quiz analysis context and navigates to the results page.
+
 interface Question {
   question_text: string;
   question_type: "FREE_RESPONSE" | "MULTIPLE_CHOICE";

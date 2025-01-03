@@ -8,6 +8,11 @@ type Props = {
   threadId: string | null;
 };
 
+// UploadForm component handles sending a file to the server from the client
+// When the file is uploaded, await a response object which returns the fileId which we set to FileIdContext to be referenced in other parts of the app
+// also set the topics to be used in other parts of the app
+// If the file upload fails, the user shouldnt be allowed to access other parts of their app  (disable the nav links)
+
 export function UploadForm({ threadId }: Props) {
   const [file, setFile] = useState<File | null>();
   const [message, setMessage] = useState("");

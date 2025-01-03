@@ -8,6 +8,9 @@ import { useFlashcards } from "@/contexts/FlashcardsContext";
 import { useThread } from "@/contexts/ThreadContext";
 import { threadId } from "worker_threads";
 
+// Following component will post the topics that the user wants to learn about to the server endpoint /api/submitTopics
+// Await the flashcards from the /api/submitTopics endpoint, assign to the flashcard context and redirect the user to the flashcard page /revise
+
 type TopicsProps = {
   topics: string[]; // Topics is an array of strings
 };
